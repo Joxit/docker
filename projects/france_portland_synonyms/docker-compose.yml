@@ -25,7 +25,7 @@ services:
     container_name: pelias_api
     restart: always
     environment: [ "PORT=4000" ]
-    ports: [ "4000:4000" ]
+    ports: [ "4010:4000" ]
     volumes:
       - "./pelias.json:/code/pelias.json"
       - "libpostaldata:/usr/share/libpostal"
