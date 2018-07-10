@@ -15,10 +15,11 @@ services:
     restart: always
     ports: [ "8080:8080" ]
   schema:
-    image: pelias/schema:master
+    image: pelias/schema:portland-synonyms
     container_name: pelias_schema
     volumes:
       - "./pelias.json:/code/pelias.json"
+      - "./synonyms/custom_street.txt:/code/pelias/schema/synonyms/custom_street.txt"
   api:
     image: pelias/api:master
     container_name: pelias_api
@@ -89,14 +90,14 @@ services:
     volumes:
       - "./pelias.json:/code/pelias.json"
       - "${DATA_DIR}:/data"
-  elasticsearch:
+  elasticsearch_portland_synonyms:
     image: pelias/elasticsearch
     container_name: pelias_elasticsearch
     restart: always
-    ports: [ "9200:9200", "9300:9300" ]
+    ports: [ "9210:9200", "9310:9300" ]
     volumes:
       - "./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro"
-      - "${DATA_DIR}/elasticsearch:/usr/share/elasticsearch/data"
+      - "${DATA_DIR}/elasticsearch_portland_synonyms:/usr/share/elasticsearch/data"
     ulimits:
       memlock:
         soft: -1
