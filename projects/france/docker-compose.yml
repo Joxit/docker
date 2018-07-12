@@ -2,6 +2,8 @@ version: '3'
 networks:
   default:
     driver: bridge
+  master:
+    driver: bridge
 volumes:
   libpostaldata:
     driver: local
@@ -17,6 +19,8 @@ services:
   schema:
     image: pelias/schema:master
     container_name: pelias_schema
+    networks:
+      - master
     volumes:
       - "./pelias.json:/code/pelias.json"
   api:
@@ -25,6 +29,9 @@ services:
     restart: always
     environment: [ "PORT=4000" ]
     ports: [ "4000:4000" ]
+    networks:
+      - master
+      - default
     volumes:
       - "./pelias.json:/code/pelias.json"
       - "libpostaldata:/usr/share/libpostal"
@@ -40,24 +47,32 @@ services:
   whosonfirst:
     image: pelias/whosonfirst:master
     container_name: pelias_whosonfirst
+    networks:
+      - master
     volumes:
       - "./pelias.json:/code/pelias.json"
       - "${DATA_DIR}:/data"
   openstreetmap:
     image: pelias/openstreetmap:master
     container_name: pelias_openstreetmap
+    networks:
+      - master
     volumes:
       - "./pelias.json:/code/pelias.json"
       - "${DATA_DIR}:/data"
   openaddresses:
     image: pelias/openaddresses:master
     container_name: pelias_openaddresses
+    networks:
+      - master
     volumes:
       - "./pelias.json:/code/pelias.json"
       - "${DATA_DIR}:/data"
   polylines:
     image: pelias/polylines:master
     container_name: pelias_polylines
+    networks:
+      - master
     volumes:
       - "./pelias.json:/code/pelias.json"
       - "${DATA_DIR}:/data"
@@ -93,7 +108,8 @@ services:
     image: pelias/elasticsearch
     container_name: pelias_elasticsearch
     restart: always
-    ports: [ "9200:9200", "9300:9300" ]
+    networks:
+      - master
     volumes:
       - "./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro"
       - "${DATA_DIR}/elasticsearch:/usr/share/elasticsearch/data"
@@ -104,6 +120,8 @@ services:
       nofile:
         soft: 65536
         hard: 65536
+    environment:
+      ES_HEAP_SIZE: 20g
     cap_add: [ "IPC_LOCK" ]
     security_opt:
       - seccomp=unconfined

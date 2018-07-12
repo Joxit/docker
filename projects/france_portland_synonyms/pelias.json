@@ -6,8 +6,8 @@
   "esclient": {
     "hosts": [
       {
-        "host": "elasticsearch_portland_synonyms",
-        "port": 9210
+        "host": "elasticsearch",
+        "port": 9200
       }
     ]
   },
